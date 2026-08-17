@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Physics Association | Madhabdev University</title>
+
+<meta name="description"
+content="Physics Association, Madhabdev University — An initiative of the fraternity of faculty and students of the Department of Physics.">
+
+<style>
+/* =========================================================
+   PHYSICS ASSOCIATION — MADHABDEV UNIVERSITY
+   Single-file GitHub Pages website
+   ========================================================= */
+
+:root {
+    --navy: #061b3a;
+    --blue: #0d3b72;
+    --orange: #f58220;
+    --gold: #ffb000;
+    --white: #ffffff;
+    --light: #f4f7fb;
+    --text: #24324a;
+    --glow: rgba(245, 130, 32, 0.55);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+/* -------------------------
+   PARTICLE BACKGROUND
+------------------------- */
+
+#physicsCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background:
+        radial-gradient(circle at top right, #123866 0%, transparent 35%),
+        radial-gradient(circle at bottom left, #3d2100 0%, transparent 30%),
+        #061b3a;
+}
+
+/* -------------------------
+   NAVIGATION
+------------------------- */
+
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 12px 7%;
+    background: rgba(6, 27, 58, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid rgba(245,130,32,0.7);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+}
+
+.brand img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.brand-text h3 {
+    font-size: 1rem;
+    letter-spacing: 1px;
+}
+
+.brand-text span {
+    font-size: 0.72rem;
+    opacity: 0.75;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 25px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--orange);
+}
+
+/* -------------------------
+   HERO SECTION
+------------------------- */
+
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    padding: 130px 20px 80px;
+    color: white;
+    position: relative;
+}
+
+.hero-content {
+    max-width: 1000px;
+    animation: fadeUp 1.2s ease;
+}
+
+.logo-main {
+    width: 180px;
+    max-width: 45vw;
+    margin-bottom: 25px;
+
+    filter:
+        drop-shadow(0 0 12px rgba(245,130,32,.8))
+        drop-shadow(0 0 30px rgba(255,255,255,.15));
+
+    animation: float 4s ease-in-out infinite;
+}
+
+.hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    line-height: 1.05;
+
+    text-shadow:
+        0 0 10px rgba(255,255,255,.15),
+        0 0 30px rgba(245,130,32,.25);
+}
+
+.hero h1 span {
+    color: var(--orange);
+}
+
+.hero .subtitle {
+    margin: 25px auto;
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    max-width: 850px;
+    line-height: 1.8;
+    opacity: 0.9;
+}
+
+.physics-equation {
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    color: var(--gold);
+    margin: 25px 0;
+
+    animation: glow 3s infinite alternate;
+}
+
+.hero-buttons {
+    margin-top: 35px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 14px 28px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.35s ease;
+}
+
+.btn-primary {
+    background: var(--orange);
+    color: white;
+    box-shadow: 0 0 20px var(--glow);
+}
+
+.btn-primary:hover {
+    transform: translateY(-4px);
+    background: var(--gold);
+    color: var(--navy);
+}
+
+.btn-outline {
+    border: 2px solid var(--orange);
+    color: white;
+}
+
+.btn-outline:hover {
+    background: var(--orange);
+    transform: translateY(-4px);
+}
+
+/* -------------------------
+   ORBITING ATOM
+------------------------- */
+
+.atom {
+    width: 260px;
+    height: 260px;
+    margin: 25px auto;
+    position: relative;
+}
+
+.nucleus {
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    background: radial-gradient(circle, var(--orange), #b94700);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 30px var(--orange);
+}
+
+.orbit {
+    position: absolute;
+    width: 100%;
+    height: 42%;
+    border: 2px solid rgba(255,255,255,.65);
+    border-radius: 50%;
+    top: 29%;
+    animation: rotate 7s linear infinite;
+}
+
+.orbit:nth-child(2) {
+    transform: rotate(60deg);
+    animation-duration: 9s;
+}
+
+.orbit:nth-child(3) {
+    transform: rotate(120deg);
+    animation-duration: 11s;
+}
+
+.electron {
+    width: 15px;
+    height: 15px;
+    background: #8dd8ff;
+    border-radius: 50%;
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    box-shadow: 0 0 15px #8dd8ff;
+}
+
+/* -------------------------
+   SECTIONS
+------------------------- */
+
+section.content-section {
+    padding: 90px 8%;
+    background: white;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.section-title h2 {
+    color: var(--navy);
+    font-size: clamp(2rem, 4vw, 3.3rem);
+}
+
+.section-title p {
+    margin-top: 12px;
+    color: #64748b;
+    font-size: 1.05rem;
+}
+
+/* -------------------------
+   ABOUT
+------------------------- */
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 55px;
+    align-items: center;
+}
+
+.about-text h3 {
+    color: var(--orange);
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+}
+
+.about-text p {
+    line-height: 1.9;
+    margin-bottom: 18px;
+    color: #4b5563;
+}
+
+.physics-box {
+    min-height: 350px;
+    border-radius: 20px;
+
+    background:
+        linear-gradient(135deg,
+        var(--navy),
+        #0d3b72);
+
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.physics-box::before {
+    content: "∇²ψ + k²ψ = 0";
+    position: absolute;
+    font-family: Georgia, serif;
+    font-size: 3rem;
+    opacity: .08;
+    transform: rotate(-25deg);
+}
+
+.physics-box-content {
+    z-index: 2;
+}
+
+.physics-box h3 {
+    font-size: 2rem;
+    color: var(--gold);
+}
+
+.physics-box p {
+    margin-top: 15px;
+    line-height: 1.7;
+}
+
+/* -------------------------
+   FEATURE CARDS
+------------------------- */
+
+.activities {
+    background: #f3f6fb !important;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.card {
+    background: white;
+    padding: 35px 28px;
+    border-radius: 18px;
+
+    border-bottom: 4px solid var(--orange);
+
+    box-shadow: 0 10px 35px rgba(0,0,0,.08);
+
+    transition: 0.4s;
+    position: relative;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 45px rgba(0,0,0,.14);
+}
+
+.card-icon {
+    width: 65px;
+    height: 65px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--navy);
+    color: var(--orange);
+
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.card h3 {
+    color: var(--navy);
+    margin-bottom: 12px;
+}
+
+.card p {
+    line-height: 1.7;
+    color: #64748b;
+}
+
+/* -------------------------
+   UNDER CONSTRUCTION
+------------------------- */
+
+.construction {
+    background:
+        radial-gradient(circle at center, #143c6b, var(--navy));
+    color: white;
+
+    padding: 100px 8%;
+    text-align: center;
+
+    position: relative;
+    overflow: hidden;
+}
+
+.construction h2 {
+    font-size: clamp(2.2rem, 5vw, 4rem);
+}
+
+.construction h2 span {
+    color: var(--orange);
+}
+
+.construction p {
+    max-width: 750px;
+    margin: 20px auto;
+    line-height: 1.8;
+    opacity: .85;
+}
+
+/* Animated wave */
+
+.wave-loader {
+    width: 280px;
+    height: 80px;
+    margin: 35px auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.wave-line {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    left: -50%;
+    top: 10px;
+
+    background:
+        repeating-radial-gradient(
+            ellipse at center,
+            transparent 0 12px,
+            var(--orange) 13px 16px,
+            transparent 17px 28px
+        );
+
+    animation: waveMove 3s linear infinite;
+}
+
+/* -------------------------
+   CONTACT
+------------------------- */
+
+.contact {
+    background: white;
+}
+
+.contact-box {
+    max-width: 900px;
+    margin: auto;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.contact-item {
+    text-align: center;
+    padding: 30px 20px;
+
+    border-radius: 15px;
+    background: var(--light);
+}
+
+.contact-item .icon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+}
+
+.contact-item h4 {
+    color: var(--navy);
+    margin-bottom: 8px;
+}
+
+.contact-item p,
+.contact-item a {
+    font-size: .9rem;
+    color: #556070;
+    text-decoration: none;
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+/* -------------------------
+   FOOTER
+------------------------- */
+
+footer {
+    background: #041225;
+    color: white;
+    text-align: center;
+    padding: 30px 20px;
+}
+
+footer p {
+    opacity: .75;
+    font-size: .9rem;
+}
+
+.footer-equation {
+    color: var(--orange);
+    margin-top: 10px;
+    font-family: Georgia, serif;
+    font-style: italic;
+}
+
+/* -------------------------
+   SCROLL TOP BUTTON
+------------------------- */
+
+#topBtn {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+
+    width: 45px;
+    height: 45px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: var(--orange);
+    color: white;
+
+    cursor: pointer;
+    display: none;
+
+    font-size: 1.2rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,.25);
+}
+
+/* -------------------------
+   ANIMATIONS
+------------------------- */
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 5px var(--orange);
+    }
+
+    to {
+        text-shadow:
+            0 0 15px var(--orange),
+            0 0 35px var(--orange);
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes waveMove {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-25%);
+    }
+}
+
+/* -------------------------
+   RESPONSIVE
+------------------------- */
+
+@media(max-width: 850px) {
+
+    nav {
+        padding: 10px 5%;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .about-grid,
+    .card-grid,
+    .contact-box {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        padding-top: 110px;
+    }
+
+    .brand-text h3 {
+        font-size: .8rem;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<!-- =====================================================
+     ANIMATED PARTICLE BACKGROUND
+===================================================== -->
+
+<canvas id="physicsCanvas"></canvas>
+
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
+<nav>
+
+    <div class="brand">
+
+        <!-- Put your logo file in the repository as logo.png -->
+
+        <img src="logo.png"
+             alt="Physics Association Logo"
+             onerror="this.style.display='none'">
+
+        <div class="brand-text">
+            <h3>PHYSICS ASSOCIATION</h3>
+            <span>MADHABDEV UNIVERSITY</span>
+        </div>
+
+    </div>
+
+    <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#activities">Activities</a></li>
+        <li><a href="#construction">Updates</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+
+</nav>
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section class="hero" id="home">
+
+    <div class="hero-content">
+
+        <!-- Replace logo.png with your actual logo -->
+
+        <img src="logo.png"
+             class="logo-main"
+             alt="Physics Association, Madhabdev University">
+
+        <p style="color:#f58220; letter-spacing:3px; font-weight:600;">
+            DEPARTMENT OF PHYSICS
+        </p>
+
+        <h1>
+            PHYSICS <span>ASSOCIATION</span>
+        </h1>
+
+        <p class="subtitle">
+
+            An initiative of the fraternity of
+            <strong>Faculty and Students</strong>
+            of the Department of Physics,
+            Madhabdev University.
+
+        </p>
+
+        <div class="physics-equation">
+            E = mc²
+        </div>
+
+
+        <!-- Animated Atom -->
+
+        <div class="atom">
+
+            <div class="nucleus"></div>
+
+            <div class="orbit">
+                <div class="electron"></div>
+            </div>
+
+            <div class="orbit">
+                <div class="electron"></div>
+            </div>
+
+            <div class="orbit">
+                <div class="electron"></div>
+            </div>
+
+        </div>
+
+
+        <div class="hero-buttons">
+
+            <a href="#about" class="btn btn-primary">
+                Explore Physics
+            </a>
+
+            <a href="#construction" class="btn btn-outline">
+                Discover More
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ABOUT
+===================================================== -->
+
+<section class="content-section" id="about">
+
+    <div class="section-title">
+
+        <h2>About the Association</h2>
+
+        <p>
+            Learning • Exploring • Discovering • Inspiring
+        </p>
+
+    </div>
+
+
+    <div class="about-grid">
+
+        <div class="about-text">
+
+            <h3>
+                Where Curiosity Meets the Universe
+            </h3>
+
+            <p>
+                The Physics Association of Madhabdev University is an
+                academic and intellectual initiative of the fraternity of
+                faculty members and students of the Department of Physics.
+            </p>
+
+            <p>
+                The Association aims to create an engaging platform for
+                scientific discussion, learning, research, innovation and
+                the exploration of the fundamental laws governing nature
+                and the universe.
+            </p>
+
+            <p>
+                From the quantum world to black holes, from classical
+                mechanics to cosmology, we believe that physics provides
+                a unique language through which we can understand reality.
+            </p>
+
+        </div>
+
+
+        <div class="physics-box">
+
+            <div class="physics-box-content">
+
+                <h3>Our Universe is a Laboratory</h3>
+
+                <p>
+                    Question the known. Explore the unknown.
+                    Discover the laws that shape the cosmos.
+                </p>
+
+                <br>
+
+                <div style="font-size:2.5rem; color:#ffb000;">
+                    ∞
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ACTIVITIES
+===================================================== -->
+
+<section class="content-section activities" id="activities">
+
+    <div class="section-title">
+
+        <h2>What We Aim To Do</h2>
+
+        <p>
+            Building a vibrant scientific community
+        </p>
+
+    </div>
+
+
+    <div class="card-grid">
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                🔭
+            </div>
+
+            <h3>Scientific Exploration</h3>
+
+            <p>
+                Explore the fascinating world of astrophysics,
+                cosmology, black holes, quantum physics and the
+                fundamental laws of nature.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                ⚛
+            </div>
+
+            <h3>Academic Activities</h3>
+
+            <p>
+                Seminars, workshops, lectures, discussions and
+                scientific interactions designed to promote deeper
+                understanding and intellectual curiosity.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                🧪
+            </div>
+
+            <h3>Research & Innovation</h3>
+
+            <p>
+                Encouraging students to engage with research,
+                computational physics, experimentation and
+                emerging areas of modern science.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                🌌
+            </div>
+
+            <h3>Physics Outreach</h3>
+
+            <p>
+                Bringing science beyond the classroom and inspiring
+                young minds to explore the wonders of the universe.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                📚
+            </div>
+
+            <h3>Learning Community</h3>
+
+            <p>
+                Creating an inclusive environment where faculty and
+                students can learn, collaborate, discuss and grow
+                together.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                🚀
+            </div>
+
+            <h3>The Future</h3>
+
+            <p>
+                Preparing students to think critically, solve problems
+                and contribute to the future of science and technology.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     UNDER CONSTRUCTION
+===================================================== -->
+
+<section class="construction" id="construction">
+
+    <h2>
+        WEBSITE <span>UNDER CONSTRUCTION</span>
+    </h2>
+
+    <p>
+
+        We are currently building an exciting digital platform for the
+        Physics Association of Madhabdev University.
+
+        Soon, you will find information about our activities, events,
+        seminars, scientific discussions, research initiatives,
+        student engagement programmes and much more.
+
+    </p>
+
+
+    <div class="wave-loader">
+        <div class="wave-line"></div>
+    </div>
+
+
+    <p style="color:#ffb000; font-weight:600;">
+        Something exciting is evolving...
+    </p>
+
+</section>
+
+
+<!-- =====================================================
+     CONTACT
+===================================================== -->
+
+<section class="content-section contact" id="contact">
+
+    <div class="section-title">
+
+        <h2>Connect With Us</h2>
+
+        <p>
+            Join us in exploring the beauty and mysteries of physics.
+        </p>
+
+    </div>
+
+
+    <div class="contact-box">
+
+
+        <div class="contact-item">
+
+            <div class="icon">📍</div>
+
+            <h4>Address</h4>
+
+            <p>
+                <strong>Madhabdev University</strong><br>
+
+                Narayanpur, PO- Dikrong<br>
+
+                Lakhimpur, Assam – 784164
+            </p>
+
+        </div>
+
+
+        <div class="contact-item">
+
+            <div class="icon">✉</div>
+
+            <h4>Email</h4>
+
+            <a href="mailto:physicsassociationmdu@atomicmail.io">
+                physicsassociationmdu@atomicmail.io
+            </a>
+
+        </div>
+
+
+        <div class="contact-item">
+
+            <div class="icon">🌐</div>
+
+            <h4>Website</h4>
+
+            <a href="https://physicsassociationmdu.github.io/"
+               target="_blank">
+
+                physicsassociationmdu.github.io
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <p>
+
+        © 2026 Physics Association, Madhabdev University.
+        All Rights Reserved.
+
+    </p>
+
+    <p>
+        An initiative of the fraternity of Faculty and Students
+        of the Department of Physics.
+    </p>
+
+    <div class="footer-equation">
+        "The important thing is to never stop questioning."
+    </div>
+
+</footer>
+
+
+<button id="topBtn" title="Back to top">
+    ↑
+</button>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+/* =====================================================
+   PARTICLE / STAR FIELD
+===================================================== */
+
+const canvas = document.getElementById("physicsCanvas");
+const ctx = canvas.getContext("2d");
+
+let particles = [];
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+resizeCanvas();
+
+window.addEventListener("resize", resizeCanvas);
+
+
+class Particle {
+
+    constructor() {
+
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+
+        this.size = Math.random() * 2 + 0.5;
+
+        this.speedX =
+            (Math.random() - 0.5) * 0.4;
+
+        this.speedY =
+            (Math.random() - 0.5) * 0.4;
+
+        this.opacity =
+            Math.random() * 0.7 + 0.2;
+    }
+
+
+    update() {
+
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        if (this.x < 0 || this.x > canvas.width) {
+            this.speedX *= -1;
+        }
+
+        if (this.y < 0 || this.y > canvas.height) {
+            this.speedY *= -1;
+        }
+
+    }
+
+
+    draw() {
+
+        ctx.beginPath();
+
+        ctx.arc(
+            this.x,
+            this.y,
+            this.size,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle =
+            `rgba(255, 180, 0, ${this.opacity})`;
+
+        ctx.fill();
+
+    }
+
+}
+
+
+/* Number of particles */
+
+for (let i = 0; i < 120; i++) {
+    particles.push(new Particle());
+}
+
+
+function connectParticles() {
+
+    for (let a = 0; a < particles.length; a++) {
+
+        for (let b = a + 1; b < particles.length; b++) {
+
+            const dx =
+                particles[a].x - particles[b].x;
+
+            const dy =
+                particles[a].y - particles[b].y;
+
+            const distance =
+                Math.sqrt(dx * dx + dy * dy);
+
+
+            if (distance < 120) {
+
+                ctx.beginPath();
+
+                ctx.strokeStyle =
+                    `rgba(255,255,255,${
+                        0.08 - distance / 2000
+                    })`;
+
+                ctx.lineWidth = 0.5;
+
+                ctx.moveTo(
+                    particles[a].x,
+                    particles[a].y
+                );
+
+                ctx.lineTo(
+                    particles[b].x,
+                    particles[b].y
+                );
+
+                ctx.stroke();
+
+            }
+
+        }
+
+    }
+
+}
+
+
+function animateParticles() {
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    particles.forEach(particle => {
+
+        particle.update();
+
+        particle.draw();
+
+    });
+
+
+    connectParticles();
+
+    requestAnimationFrame(
+        animateParticles
+    );
+
+}
+
+
+animateParticles();
+
+
+
+/* =====================================================
+   BACK TO TOP BUTTON
+===================================================== */
+
+const topBtn =
+    document.getElementById("topBtn");
+
+
+window.addEventListener("scroll", () => {
+
+    if (window.scrollY > 500) {
+
+        topBtn.style.display = "block";
+
+    }
+
+    else {
+
+        topBtn.style.display = "none";
+
+    }
+
+});
+
+
+topBtn.addEventListener("click", () => {
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+});
+
+
+
+/* =====================================================
+   DYNAMIC PAGE TITLE
+===================================================== */
+
+const originalTitle =
+    "Physics Association | Madhabdev University";
+
+
+document.addEventListener(
+    "visibilitychange",
+    () => {
+
+        if (document.hidden) {
+
+            document.title =
+                "⚛ Come Back to Explore Physics!";
+
+        }
+
+        else {
+
+            document.title =
+                originalTitle;
+
+        }
+
+    }
+);
+
+</script>
+
+
+</body>
+</html>
